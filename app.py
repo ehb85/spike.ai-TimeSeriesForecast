@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify
-from sklearn.model_selection import GridSearchCV
 import xgboost as xgb
 
 
@@ -24,7 +23,8 @@ def train():
         booster = hyperparameters['booster'] if ('booster' in hyperparameters) else 'gbtree'
 
         # create model instance
-        bst = XGBClassifier(n_estimators=n_estimators, max_depth=max_depth, learning_rate=learning_rate, min_child_weight=min_child_weight, booster=booster)
+        bst = xgb.XGBClassifier(n_estimators=n_estimators, max_depth=max_depth, learning_rate=learning_rate, min_child_weight=min_child_weight, booster=booster)
+
 
         # data to train 
         X_train = content['train_data']['target']
