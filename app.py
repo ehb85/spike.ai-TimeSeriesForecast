@@ -22,6 +22,7 @@ def upload_file():
 def load_data():
     # preprocesa tdos
     s3 = boto3.client("s3")
+    s3 = boto3.resource('s3', aws_access_key_id='eugenio.huerta@me.com', aws_secret_access_key='RetCo1234.')
     bucket_name = "spike.ai"
     s3_object = "orderData_Features_wLags.pkl"
 
@@ -56,12 +57,8 @@ def train():
         # create model instance
         bst = xgb.XGBClassifier(n_estimators=n_estimators, max_depth=max_depth, learning_rate=learning_rate, min_child_weight=min_child_weight, booster=booster)
 
-        s3 = boto3.client("s3")
-        bucket_name = "spike.ai"
-        s3_object = "orderData_Features_wLags.pkl"
 
-        obj = s3.get_object(Bucket=bucket_name, Key=s3_object)
-        orderData_Features = pd.read_pickle(obj['Body']) 
+        orderData_Features = pd.read_pickle('s3://spike.ai/orderData_Features_wLags.pkl') 
 
         TARGET = 'qty'
         FEATURES = ['outlier', 'cluster', 'date_day_of_week', 'date_day_of_month', 'date_day_of_year', 'date_week', 'date_month', 'qty_1DA', 'qty_2DA', 'qty_3DA', 'qty_4DA', 'qty_5DA', 'qty_6DA', 'qty_7DA', 'qty_8DA', 'qty_9DA', 'qty_10DA', 'qty_11DA', 'qty_12DA', 'qty_13DA', 'qty_14DA', 'qty_21DA', 'qty_28DA']
