@@ -22,7 +22,6 @@ def upload_file():
 def load_data():
     # preprocesa tdos
     s3 = boto3.client("s3")
-    s3 = boto3.resource('s3', aws_access_key_id='eugenio.huerta@me.com', aws_secret_access_key='RetCo1234.')
     bucket_name = "spike.ai"
     s3_object = "orderData_Features_wLags.pkl"
 

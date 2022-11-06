@@ -13,3 +13,4 @@ flask_restplus
 requests
 redis
 boto3
+fsspec
