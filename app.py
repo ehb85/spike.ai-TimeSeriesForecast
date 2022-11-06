@@ -2,8 +2,11 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
+@app.route("/")
+def hello_world():
+    return "<p>Hello, World!</p>"
 
-@app.route('/train', methods=['GET', 'POST'])
+@app.route('/train')
 def add_message():
     if request.method == 'POST':
         content = request.json
@@ -13,9 +16,6 @@ def add_message():
     return aux
 
 
-@app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
 
 
 if __name__ == "__main__":
