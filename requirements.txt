@@ -14,3 +14,4 @@ requests
 redis
 boto3
 fsspec
+s3fs
