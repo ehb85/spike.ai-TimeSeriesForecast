@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import xgboost as xgb
 import pandas as pd
 import boto3
+import s3fs
 
 app = Flask(__name__)
 
