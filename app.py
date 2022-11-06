@@ -8,7 +8,11 @@ def index():
 
 @app.route('/train')
 def train():
-    return 'Hello, World'
+    if request.method == 'POST':
+        content = request.json
+        return content['data']
+    else:
+        return 'nooo'
 
 
 if __name__ == "__main__":
