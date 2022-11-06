@@ -12,10 +12,10 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    uploaded_file = request.files['file']
-    if uploaded_file.filename != '':
-        uploaded_file.save(uploaded_file.filename)
-    return 'cargado'
+    from werkzeug.datastructures import FileStorage
+    #FileStorage(request.stream).save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    FileStorage(request.stream).save('file.pkl')
+    return 'OK', 200
 
 
 @app.route('/train', methods=['GET', 'POST'])
