@@ -23,7 +23,7 @@ def upload_file():
 def load_data():
     #conecta con S3
     content = request.get_json()
-    
+
     source = content['source']
     s3 = boto3.client('s3', aws_access_key_id=source['aws_access_key_id'], aws_secret_access_key= source['aws_secret_access_key'])
 
@@ -59,12 +59,20 @@ def train():
         learning_rate = hyperparameters['learning_rate'] if ('learning_rate' in hyperparameters) else 0.1
         min_child_weight = hyperparameters['min_child_weight'] if ('min_child_weight' in hyperparameters) else 10
         booster = hyperparameters['booster'] if ('booster' in hyperparameters) else 'gbtree'
+        print('ok carga yperparametros')
+
+        #conecta con S3
+        source = content['source']
+        s3 = boto3.client('s3', aws_access_key_id=source['aws_access_key_id'], aws_secret_access_key= source['aws_secret_access_key'])
+
+        bucket_name = source['bucket_name']
+        s3_object = source['object']
+
+        obj = s3.get_object(Bucket=bucket_name, Key=s3_object)
+        orderData_Features = pd.read_pickle(obj['Body']) 
+        print('ok carga data desde s3')
 
         # create model instance
-        bst = xgb.XGBClassifier(n_estimators=n_estimators, max_depth=max_depth, learning_rate=learning_rate, min_child_weight=min_child_weight, booster=booster)
-
-
-        orderData_Features = pd.read_pickle('s3://spike.ai/orderData_Features_wLags.pkl') 
 
         TARGET = 'qty'
         FEATURES = ['outlier', 'cluster', 'date_day_of_week', 'date_day_of_month', 'date_day_of_year', 'date_week', 'date_month', 'qty_1DA', 'qty_2DA', 'qty_3DA', 'qty_4DA', 'qty_5DA', 'qty_6DA', 'qty_7DA', 'qty_8DA', 'qty_9DA', 'qty_10DA', 'qty_11DA', 'qty_12DA', 'qty_13DA', 'qty_14DA', 'qty_21DA', 'qty_28DA']
@@ -74,14 +82,13 @@ def train():
         
         X_test = orderData_Features[orderData_Features.fecha > '2022-04-03'][FEATURES]
         y_test = orderData_Features[orderData_Features.fecha > '2022-04-03'][TARGET]
-
+        print('ok transfformacionn de la data')
 
         
-
-
         # fit model
+        bst = xgb.XGBClassifier(n_estimators=n_estimators, max_depth=max_depth, learning_rate=learning_rate, min_child_weight=min_child_weight, booster=booster)
         bst.fit(X_train, y_train, eval_set = [(X_train, y_train), (X_test, y_test)], verbose = 10)
-
+        print('ok listailor')
         
         return bst
     else:
