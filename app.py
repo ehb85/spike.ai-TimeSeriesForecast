@@ -21,14 +21,17 @@ def upload_file():
 
 @app.route('/load_data', methods=['POST'])
 def load_data():
-    # preprocesa tdos
-    s3 = boto3.client('s3', aws_access_key_id='AKIAXMPJRM4XSSLEZT2K', aws_secret_access_key= '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')
+    #conecta con S3
+    source = content['source']
+    s3 = boto3.client('s3', aws_access_key_id=source['aws_access_key_id'], aws_secret_access_key= source['aws_secret_access_key'])
 
-    bucket_name = "spike.ai"
-    s3_object = "orderData_Features_wLags.pkl"
+    bucket_name = source['bucket_name']
+    s3_object = source['object']
 
     obj = s3.get_object(Bucket=bucket_name, Key=s3_object)
     orderData_Features = pd.read_pickle(obj['Body']) 
+
+    # preprocesa tdos
     TARGET = 'qty'
     FEATURES = ['outlier', 'cluster', 'date_day_of_week', 'date_day_of_month', 'date_day_of_year', 'date_week', 'date_month', 'qty_1DA', 'qty_2DA', 'qty_3DA', 'qty_4DA', 'qty_5DA', 'qty_6DA', 'qty_7DA', 'qty_8DA', 'qty_9DA', 'qty_10DA', 'qty_11DA', 'qty_12DA', 'qty_13DA', 'qty_14DA', 'qty_21DA', 'qty_28DA']
 
