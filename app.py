@@ -38,7 +38,7 @@ def train():
         bst.fit(X_train, y_train, eval_set = [(X_train, y_train), (X_test, y_test)], verbose = 10)
 
         
-        return content['hyperparameters']['n_estimators']
+        return bst
     else:
         return 'nooo'
 
