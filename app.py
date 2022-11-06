@@ -8,8 +8,12 @@ def hello_world():
 
 @app.route('/train', methods=['GET', 'POST'])
 def add_message():
-    content = request.json
-    return content
+    if request.method == 'POST':
+        content = request.json
+        aux = content
+    else:
+        aux = "test..."
+    return aux
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
