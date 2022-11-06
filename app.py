@@ -18,7 +18,7 @@ def upload_file():
 @app.route('/load_data', methods=['POST'])
 def load_data():
     # preprocesa tdos
-    orderData_Features = pd.read_pickle("orderData_Features_wLags.pkl") 
+    orderData_Features = pd.read_pickle("../orderData_Features_wLags.pkl") 
     TARGET = 'qty'
     FEATURES = ['outlier', 'cluster', 'date_day_of_week', 'date_day_of_month', 'date_day_of_year', 'date_week', 'date_month', 'qty_1DA', 'qty_2DA', 'qty_3DA', 'qty_4DA', 'qty_5DA', 'qty_6DA', 'qty_7DA', 'qty_8DA', 'qty_9DA', 'qty_10DA', 'qty_11DA', 'qty_12DA', 'qty_13DA', 'qty_14DA', 'qty_21DA', 'qty_28DA']
 
