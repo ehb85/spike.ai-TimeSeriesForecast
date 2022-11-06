@@ -22,6 +22,8 @@ def upload_file():
 @app.route('/load_data', methods=['POST'])
 def load_data():
     #conecta con S3
+    content = request.get_json()
+    
     source = content['source']
     s3 = boto3.client('s3', aws_access_key_id=source['aws_access_key_id'], aws_secret_access_key= source['aws_secret_access_key'])
 
