@@ -14,7 +14,7 @@ def index():
 def upload_file():
     from werkzeug.datastructures import FileStorage
     #FileStorage(request.stream).save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    FileStorage(request.stream).save('file.pkl')
+    FileStorage(request.files['file']).save('file.pkl')
     return 'OK', 200
 
 
