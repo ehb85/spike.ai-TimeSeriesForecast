@@ -12,3 +12,4 @@ Werkzeug==2.2.2
 flask_restplus
 requests
 redis
+boto3
