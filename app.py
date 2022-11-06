@@ -5,7 +5,7 @@ app = Flask(__name__)
 def index():
     return 'Index Page'
 
-@app.route('/train')
+@app.route('/train', methods=['GET', 'POST'])
 def train():
     if request.method == 'POST':
         content = request.get_json()
