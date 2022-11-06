@@ -6,7 +6,7 @@ app = Flask(__name__)
 def hello_world():
     return "<p>Hello, World!</p>"
 
-@app.route('/train/', methods=['GET', 'POST'])
+@app.route('/train', methods=['GET', 'POST'])
 def add_message():
     content = request.json
     return content
