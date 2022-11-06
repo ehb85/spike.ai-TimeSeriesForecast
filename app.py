@@ -25,7 +25,6 @@ def train():
         # create model instance
         bst = xgb.XGBClassifier(n_estimators=n_estimators, max_depth=max_depth, learning_rate=learning_rate, min_child_weight=min_child_weight, booster=booster)
 
-
         # data to train 
         X_train = content['train_data']['target']
         y_train = content['train_data']['features']
