@@ -33,6 +33,7 @@ def load_data():
 
     obj = s3.get_object(Bucket=bucket_name, Key=s3_object)
     orderData_Features = pd.read_json(io.BytesIO(obj['Body'].read()))
+    orderData_Features['fecha'] =  pd.to_datetime(orderData_Features['fecha'],unit='ms')
 
     # preprocesa tdos
     TARGET = 'qty'
@@ -71,6 +72,7 @@ def train():
 
         obj = s3.get_object(Bucket=bucket_name, Key=s3_object)
         orderData_Features = pd.read_json(io.BytesIO(obj['Body'].read()))
+        orderData_Features['fecha'] =  pd.to_datetime(orderData_Features['fecha'],unit='ms')
         print('ok carga data desde s3')
 
         # create model instance
