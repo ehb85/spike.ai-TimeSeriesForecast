@@ -77,6 +77,8 @@ def train():
         orderData_Features['fecha'] =  pd.to_datetime(orderData_Features['fecha'],unit='ms')
         print('ok carga data desde s3')
 
+        timestamp_end_extraction = datetime.datetime.now()
+
         # create model instance
 
         TARGET = 'qty'
@@ -96,7 +98,7 @@ def train():
         print('ok listailor')
         
         timestamp_end = datetime.datetime.now()
-        return {'train_data_result': bst.evals_result()['validation_0']['rmse'][-1], 'test_data_result':  bst.evals_result()['validation_1']['rmse'][-1],'time_execution': (timestamp_end-timestamp_start).total_seconds()}
+        return {'train_data_result': bst.evals_result()['validation_0']['rmse'][-1], 'test_data_result':  bst.evals_result()['validation_1']['rmse'][-1],'time_model_execution': (timestamp_end-timestamp_end_extraction).total_seconds(),'time_data_extraction': (timestamp_end_extraction-timestamp_start).total_seconds()}
     else:
         return 'nooo'
 
