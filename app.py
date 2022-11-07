@@ -89,7 +89,7 @@ def train():
 
         
         # fit model
-        bst = xgb.XGBClassifier(n_estimators=n_estimators, max_depth=max_depth, learning_rate=learning_rate, min_child_weight=min_child_weight, booster=booster)
+        bst = xgb.XGBRegressor(n_estimators=n_estimators, max_depth=max_depth, learning_rate=learning_rate, min_child_weight=min_child_weight, booster=booster)
         bst.fit(X_train, y_train, eval_set = [(X_train, y_train), (X_test, y_test)], verbose = 10)
         print('ok listailor')
         
