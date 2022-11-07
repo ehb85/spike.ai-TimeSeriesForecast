@@ -4,6 +4,7 @@ import pandas as pd
 import boto3
 import s3fs
 import io
+import datetime
 
 app = Flask(__name__)
 
@@ -51,6 +52,7 @@ def load_data():
 @app.route('/train', methods=['GET', 'POST'])
 def train():
     if request.method == 'POST':
+        timestamp_start = datetime.datetime.now()
         content = request.get_json()
 
         # define hyperparameters
@@ -93,7 +95,8 @@ def train():
         bst.fit(X_train, y_train, eval_set = [(X_train, y_train), (X_test, y_test)], verbose = False)
         print('ok listailor')
         
-        return {'train_data_result': bst.evals_result()['validation_0']['rmse'][-1], 'test_data_result':  bst.evals_result()['validation_1']['rmse'][-1]}
+        timestamp_end = datetime.datetime.now()
+        return {'train_data_result': bst.evals_result()['validation_0']['rmse'][-1], 'test_data_result':  bst.evals_result()['validation_1']['rmse'][-1],'time_execution': (timestamp_end-timestamp_start).total_seconds()}
     else:
         return 'nooo'
 
