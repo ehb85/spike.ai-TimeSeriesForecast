@@ -90,10 +90,10 @@ def train():
         
         # fit model
         bst = xgb.XGBRegressor(n_estimators=n_estimators, max_depth=max_depth, learning_rate=learning_rate, min_child_weight=min_child_weight, booster=booster)
-        bst.fit(X_train, y_train, eval_set = [(X_train, y_train), (X_test, y_test)], verbose = 10)
+        bst.fit(X_train, y_train, eval_set = [(X_train, y_train), (X_test, y_test)], verbose = False)
         print('ok listailor')
         
-        return bst
+        return {'train_data_result': bst.evals_result()['validation_0']['rmse'][-1], 'test_data_result':  bst.evals_result()['validation_1']['rmse'][-1]}
     else:
         return 'nooo'
 
