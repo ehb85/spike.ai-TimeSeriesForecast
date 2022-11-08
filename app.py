@@ -3,6 +3,7 @@ import xgboost as xgb
 import pandas as pd
 import boto3
 import s3fs
+import os
 import io
 import datetime
 import time
@@ -22,27 +23,40 @@ def upload_file():
     f.save(secure_filename(f.filename))
     return 'Load'
 
-@app.route('/load_data', methods=['POST'])
+
+
+
+
+@app.route('/load_data', methods=['GET', 'POST'])
 def load_data():
-    #conecta con S3
-    content = request.get_json()
+    if request.method == 'POST':
+        #conecta con S3
+        content = request.get_json()
 
-    source = content['source']
-    s3 = boto3.client('s3', aws_access_key_id=source['aws_access_key_id'], aws_secret_access_key= source['aws_secret_access_key'])
+        source = content['source']
+        s3 = boto3.client('s3', aws_access_key_id=source['aws_access_key_id'], aws_secret_access_key= source['aws_secret_access_key'])
 
-    bucket_name = source['bucket_name']
+        bucket_name = source['bucket_name']
 
-    for s3_object in source['object']:
+        for s3_object in source['object']:
 
-        obj = s3.get_object(Bucket=bucket_name, Key=s3_object)
-        orderData_Features = pd.read_json(io.BytesIO(obj['Body'].read()))
-        orderData_Features['fecha'] =  pd.to_datetime(orderData_Features['fecha'],unit='ms')
+            obj = s3.get_object(Bucket=bucket_name, Key=s3_object)
+            orderData_Features = pd.read_json(io.BytesIO(obj['Body'].read()))
+            orderData_Features['fecha'] =  pd.to_datetime(orderData_Features['fecha'],unit='ms')
+            
+            file_name = s3_object[0:s3_object.find('.')] + '_' + str(round(time.time())) + '.pkl'
+            orderData_Features.to_pickle(file_name)
         
-        file_name = s3_object[0:s3_object.find('.')] + '_' + str(round(time.time())) + '.pkl'
-        orderData_Features.to_pickle(file_name)
-    
+        return {'file_name': file_name, 'registros': len(orderData_Features)}
 
-    return {'file_name': file_name, 'registros': len(orderData_Features)}
+    else:
+        files_str = []
+        files = [f for f in os.listdir('.') if os.path.isfile(f)]
+        for f in files:
+            if f[-4:] == '.pkl':
+                files_str.append(f)
+                
+        return  {'filenames': files_str}
 
 
 @app.route('/train', methods=['GET', 'POST'])
@@ -70,7 +84,7 @@ def train():
 
         #obj = s3.get_object(Bucket=bucket_name, Key=s3_object)
         #orderData_Features = pd.read_json(io.BytesIO(obj['Body'].read()))
-        orderData_Features = pd.read_pickle(content['source']['file_name']) 
+        orderData_Features = pd.read_pickle(source['file_name']) 
         orderData_Features['fecha'] =  pd.to_datetime(orderData_Features['fecha'],unit='ms')
         print('ok carga data desde s3')
 
