@@ -63,13 +63,14 @@ def train():
 
         #conecta con S3
         source = content['source']
-        s3 = boto3.client('s3', aws_access_key_id=source['aws_access_key_id'], aws_secret_access_key= source['aws_secret_access_key'])
+        #s3 = boto3.client('s3', aws_access_key_id=source['aws_access_key_id'], aws_secret_access_key= source['aws_secret_access_key'])
 
-        bucket_name = source['bucket_name']
-        s3_object = source['object']
+        #bucket_name = source['bucket_name']
+        #s3_object = source['object']
 
-        obj = s3.get_object(Bucket=bucket_name, Key=s3_object)
-        orderData_Features = pd.read_json(io.BytesIO(obj['Body'].read()))
+        #obj = s3.get_object(Bucket=bucket_name, Key=s3_object)
+        #orderData_Features = pd.read_json(io.BytesIO(obj['Body'].read()))
+        orderData_Features = pd.read_pickle(content['source']['file_name']) 
         orderData_Features['fecha'] =  pd.to_datetime(orderData_Features['fecha'],unit='ms')
         print('ok carga data desde s3')
 
