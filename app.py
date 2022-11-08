@@ -5,6 +5,7 @@ import boto3
 import s3fs
 import io
 import datetime
+import time
 
 app = Flask(__name__)
 
@@ -30,23 +31,18 @@ def load_data():
     s3 = boto3.client('s3', aws_access_key_id=source['aws_access_key_id'], aws_secret_access_key= source['aws_secret_access_key'])
 
     bucket_name = source['bucket_name']
-    s3_object = source['object']
 
-    obj = s3.get_object(Bucket=bucket_name, Key=s3_object)
-    orderData_Features = pd.read_json(io.BytesIO(obj['Body'].read()))
-    orderData_Features['fecha'] =  pd.to_datetime(orderData_Features['fecha'],unit='ms')
+    for s3_object in source['object']:
 
-    # preprocesa tdos
-    TARGET = 'qty'
-    FEATURES = ['outlier', 'cluster', 'date_day_of_week', 'date_day_of_month', 'date_day_of_year', 'date_week', 'date_month', 'qty_1DA', 'qty_2DA', 'qty_3DA', 'qty_4DA', 'qty_5DA', 'qty_6DA', 'qty_7DA', 'qty_8DA', 'qty_9DA', 'qty_10DA', 'qty_11DA', 'qty_12DA', 'qty_13DA', 'qty_14DA', 'qty_21DA', 'qty_28DA']
-
-    X_train = orderData_Features[orderData_Features.fecha < '2022-04-01'][FEATURES]
-    y_train = orderData_Features[orderData_Features.fecha < '2022-04-01'][TARGET]
+        obj = s3.get_object(Bucket=bucket_name, Key=s3_object)
+        orderData_Features = pd.read_json(io.BytesIO(obj['Body'].read()))
+        orderData_Features['fecha'] =  pd.to_datetime(orderData_Features['fecha'],unit='ms')
+        
+        file_name = s3_object[0:s3_object.find('.')] + '_' + str(round(time.time())) + '.pkl'
+        orderData_Features.to_pickle(file_name)
     
-    X_test = orderData_Features[orderData_Features.fecha > '2022-04-03'][FEATURES]
-    y_test = orderData_Features[orderData_Features.fecha > '2022-04-03'][TARGET]
 
-    return '200, cargado'
+    return {'file_name': file_name, 'registros': len(orderData_Features)}
 
 
 @app.route('/train', methods=['GET', 'POST'])
@@ -98,7 +94,10 @@ def train():
         print('ok listailor')
         
         timestamp_end = datetime.datetime.now()
-        return {'train_data_result': bst.evals_result()['validation_0']['rmse'][-1], 'test_data_result':  bst.evals_result()['validation_1']['rmse'][-1],'time_model_execution': (timestamp_end-timestamp_end_extraction).total_seconds(),'time_data_extraction': (timestamp_end_extraction-timestamp_start).total_seconds()}
+        return {'hyperparameters': {'n_estimators': n_estimators,'max_depth':max_depth,'learning_rate':learning_rate, 'min_child_weight'; min_child_weight,'booster':booster },
+                'results': {'train_data_result': bst.evals_result()['validation_0']['rmse'][-1], 'test_data_result':  bst.evals_result()['validation_1']['rmse'][-1]}, 
+                'execution_time': {'time_model_execution': (timestamp_end-timestamp_end_extraction).total_seconds(),'time_data_extraction': (timestamp_end_extraction-timestamp_start).total_seconds()}
+                }
     else:
         return 'nooo'
 
