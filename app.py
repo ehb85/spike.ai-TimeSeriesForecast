@@ -118,11 +118,22 @@ def train():
         return {'hyperparameters': {'n_estimators': n_estimators,'max_depth':max_depth,'learning_rate':learning_rate, 'min_child_weight': min_child_weight,'booster':booster },
                 'results': {'train_data_result': bst.evals_result()['validation_0']['rmse'][-1], 'test_data_result':  bst.evals_result()['validation_1']['rmse'][-1]}, 
                 'execution_time': {'time_model_execution': (timestamp_end-timestamp_end_extraction).total_seconds(),'time_data_extraction': (timestamp_end_extraction-timestamp_start).total_seconds()},
-                'model': {'save_nodel_file': model_name}
+                'model': {'saved_model_file': model_name}
                 }
     else:
         return 'nooo'
 
+
+@app.route('/predict', methods=['GET', 'POST'])
+def make_prediction():
+    timestamp_start = datetime.datetime.now()
+    content = request.get_json()
+
+    bst = xgb.XGBRegressor()
+    bst.load_model(content['saved_model_file'])
+    y_predict = model.predict(content['X'])
+
+    return y_predict
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
