@@ -131,7 +131,9 @@ def make_prediction():
 
     bst = xgb.XGBRegressor()
     bst.load_model(content['saved_model_file'])
-    y_predict = bst.predict(content['X'])
+
+    X_predict = np.array(content['X'])
+    y_predict = bst.predict(X_predict)
 
     return y_predict
 
