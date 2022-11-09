@@ -138,7 +138,7 @@ def make_prediction():
     X_predict = np.array(content['X'])
     y_predict = bst.predict(X_predict)
 
-    return json.dumps(y_predict)  
+    return json.dumps(y_predict.tolist())  
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
