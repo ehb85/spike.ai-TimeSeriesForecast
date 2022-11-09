@@ -117,7 +117,7 @@ def train():
 
         return {'hyperparameters': {'n_estimators': n_estimators,'max_depth':max_depth,'learning_rate':learning_rate, 'min_child_weight': min_child_weight,'booster':booster },
                 'results': {'train_data_result': bst.evals_result()['validation_0']['rmse'][-1], 'test_data_result':  bst.evals_result()['validation_1']['rmse'][-1]}, 
-                'execution_time': {'time_model_execution': (timestamp_end-timestamp_end_extraction).total_seconds(),'time_data_extraction': (timestamp_end_extraction-timestamp_start).total_seconds()}
+                'execution_time': {'time_model_execution': (timestamp_end-timestamp_end_extraction).total_seconds(),'time_data_extraction': (timestamp_end_extraction-timestamp_start).total_seconds()},
                 'model': {'save_nodel_file': model_name}
                 }
     else:
