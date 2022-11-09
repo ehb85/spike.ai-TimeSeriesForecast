@@ -25,8 +25,6 @@ def upload_file():
 
 
 
-
-
 @app.route('/load_data', methods=['GET', 'POST'])
 def load_data():
     if request.method == 'POST':
@@ -57,6 +55,7 @@ def load_data():
                 files_str.append(f)
                 
         return  {'filenames': files_str}
+
 
 
 @app.route('/train', methods=['GET', 'POST'])
@@ -109,6 +108,11 @@ def train():
         print('ok listailor')
         
         timestamp_end = datetime.datetime.now()
+
+        if content['options']['save'] then:
+            model_xgb.save_model(source['file_name'][:-4] + "_model.json")
+
+
         return {'hyperparameters': {'n_estimators': n_estimators,'max_depth':max_depth,'learning_rate':learning_rate, 'min_child_weight': min_child_weight,'booster':booster },
                 'results': {'train_data_result': bst.evals_result()['validation_0']['rmse'][-1], 'test_data_result':  bst.evals_result()['validation_1']['rmse'][-1]}, 
                 'execution_time': {'time_model_execution': (timestamp_end-timestamp_end_extraction).total_seconds(),'time_data_extraction': (timestamp_end_extraction-timestamp_start).total_seconds()}
