@@ -109,7 +109,7 @@ def train():
         
         timestamp_end = datetime.datetime.now()
 
-        if content['options']['save'] then:
+        if content['options']['save']:
             model_xgb.save_model(source['file_name'][:-4] + "_model.json")
 
 
