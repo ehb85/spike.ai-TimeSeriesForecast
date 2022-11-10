@@ -41,7 +41,7 @@ def load_data():
         orderData_Features = pd.DataFrame()
 
         for s3_object in source['object']:
-
+            print(s3_object)
             obj = s3.get_object(Bucket=bucket_name, Key=s3_object)
             orderData_Features_aux = pd.read_json(io.BytesIO(obj['Body'].read()))
             orderData_Features_aux['fecha'] =  pd.to_datetime(orderData_Features_aux['fecha'],unit='ms')
@@ -49,6 +49,7 @@ def load_data():
             
         file_name = s3_object[0:s3_object.find('.')] + '_' + str(round(time.time())) + '.pkl'
         orderData_Features.to_pickle(file_name)
+
         
         return {'file_name': file_name, 'registros': len(orderData_Features)}
 
